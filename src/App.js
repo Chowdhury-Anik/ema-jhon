@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext, useState } from 'react';
 import './App.css';
 import Header from "./components/Header/Header";
 import Shop from "./components/Shop/Shop";
@@ -17,34 +17,46 @@ import Catagories from './components/Cataagories/Catagories';
 import BestSelling from './components/BestSelling/BestSelling';
 import NotFound from './components/NotFound/NotFound';
 import ProductsDetail from './components/ProductDetails/ProductsDetail';
+import Shipment from './components/Shipment/Shipment';
+import Login from './components/Login/Login';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 
-
-function App() {
+export const UserContext = createContext();
+function App(props) {
+  const [loggedInUser, setLoggedInUser] = useState({});
 
   return (
 
-    <div>
+    <UserContext.Provider value={[loggedInUser, setLoggedInUser]}>
+      <h3>{loggedInUser.email}</h3>
       <Header></Header>
       <Router>
         <Switch>
 
           <Route path="/shop">
-          <Shop></Shop>
+            <Shop></Shop>
           </Route>
 
           <Route path="/review">
-          <Review></Review>
+            <Review></Review>
           </Route>
 
-          <Route path="/manage">
+          <PrivateRoute path="/manage">
             <Manage></Manage>
+          </PrivateRoute>
+
+          <PrivateRoute path="/shipment">
+            <Shipment></Shipment>
+          </PrivateRoute>
+          <Route path="/login">
+            <Login></Login>
           </Route>
 
           <Route path="/catagories">
             <Catagories></Catagories>
           </Route>
           <Route path="/Best-Selling">
-          <BestSelling></BestSelling>
+            <BestSelling></BestSelling>
           </Route>
 
           <Route path="/product/category/:productKey">
@@ -52,7 +64,7 @@ function App() {
           </Route>
 
           <Route exact path="/">
-           <Shop></Shop>
+            <Shop></Shop>
           </Route>
 
           <Route path="*">
@@ -60,9 +72,9 @@ function App() {
           </Route>
         </Switch>
       </Router>
-      
-      
-    </div>
+
+
+    </UserContext.Provider>
   );
 }
 

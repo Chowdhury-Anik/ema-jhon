@@ -16,7 +16,9 @@ nav a{
     padding: 5px;
 }
 nav a:hover{
-    color:rgb(31, 246, 3);
-    background-color: gray;
+    color:rgb(3, 3, 3);
+    background:rgb(255, 255, 255);
+    border-radius: 5px; 
+
 }
 

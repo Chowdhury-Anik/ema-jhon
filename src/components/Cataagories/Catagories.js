@@ -3,7 +3,7 @@ import React from 'react';
 const Catagories = () => {
     return (
         <div>
-            <h3>this is catagories <section></section></h3>
+            <h3>This is catagories <section></section></h3>
         </div>
     );
 };
