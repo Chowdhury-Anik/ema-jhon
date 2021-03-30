@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import fakeData from '../../fakeData';
-import {useState} from 'react';
+import { useState } from 'react';
 import './Shop.css';
 import Product from '../Product/Product';
 import Cart from '../Cart/Cart';
@@ -8,59 +8,78 @@ import { addToDatabaseCart, getDatabaseCart } from '../../utilities/databaseMana
 import { Link } from 'react-router-dom';
 
 const Shop = () => {
-    const first10 = fakeData.slice(0, 15);
-    const [products, setProducts] = useState(first10);
+    // const first10 = fakeData.slice(0, 15);
+    const [products, setProducts] = useState([]);
     //this is for cart
     const [cart, setCart] = useState([]);
 
+    useEffect(() => {
+        fetch('http://localhost:5000/products')
+            .then(res => res.json())
+            .then(data => setProducts(data))
 
-    useEffect(()=>{
-        const savedCart= getDatabaseCart();
-        const productKeys =Object.keys(savedCart);
-        const previousCart= productKeys.map( existingKey =>{
-            const product = fakeData.find(pd=>pd.key=== existingKey);
-            product.quantity= savedCart[existingKey];
-            return product;
+    }, [])
+
+
+    useEffect(() => {
+        const savedCart = getDatabaseCart();
+        const productKeys = Object.keys(savedCart);
+
+        // if (products.length > 0) {
+        //     const previousCart = productKeys.map(existingKey => {
+        //         const product = products.find(pd => pd.key === existingKey);
+        //         product.quantity = savedCart[existingKey];
+        //         return product;
+
+        //     })
+        //     setCart(previousCart);
+        // }
+        fetch('http://localhost:5000/productsByKeys', {
+            method: 'POST',
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(productKeys)
 
         })
-        setCart(previousCart);
-    },[])
-    
-    const handleAddProduct=(product)=>{
+            .then(res => res.json())
+            .then(data => setCart(data))
+
+    }, [])
+
+    const handleAddProduct = (product) => {
         const toBeAddedKey = product.key;
-        const sameProduct = cart.find(pd=> pd.key === toBeAddedKey);
-        
+        const sameProduct = cart.find(pd => pd.key === toBeAddedKey);
+
         let count = 1;
         let newCart;
-        if(sameProduct){
-            count = sameProduct.quantity + 1 ;
+        if (sameProduct) {
+            count = sameProduct.quantity + 1;
             sameProduct.quantity = count;
-            const others= cart.filter(pd=> pd.key !== toBeAddedKey);
-            newCart= [...others, sameProduct];
+            const others = cart.filter(pd => pd.key !== toBeAddedKey);
+            newCart = [...others, sameProduct];
 
         }
-        else{
+        else {
             product.quantity = 1;
-            newCart= [...cart, product];
+            newCart = [...cart, product];
 
         }
-        
+
         setCart(newCart);
         addToDatabaseCart(product.key, count);
     }
     return (
         <div className='twin-container'>
             <div className='product-container'>
-            
+
                 {
-                    products.map(pd=> <Product 
-                        key= {pd.key}
+                    products.map(pd => <Product
+                        key={pd.key}
                         showAddToCart={true}
-                        handleAddProduct={handleAddProduct} 
+                        handleAddProduct={handleAddProduct}
                         product={pd}
-                        ></Product>)
+                    ></Product>)
                 }
-                
+
             </div>
             <div className="cart-container">
                 <Cart cart={cart}>

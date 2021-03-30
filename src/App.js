@@ -12,7 +12,7 @@ import {
 
 
 import Review from './components/Review/Review';
-import Manage from './components/Manage/Manage';
+import Inventory from './components/Manage/Inventory';
 import Catagories from './components/Cataagories/Catagories';
 import BestSelling from './components/BestSelling/BestSelling';
 import NotFound from './components/NotFound/NotFound';
@@ -28,7 +28,6 @@ function App(props) {
   return (
 
     <UserContext.Provider value={[loggedInUser, setLoggedInUser]}>
-      <h3>{loggedInUser.email}</h3>
 
       <Router>
         <Header></Header>
@@ -43,8 +42,8 @@ function App(props) {
             <Review></Review>
           </Route>
 
-          <PrivateRoute path="/manage">
-            <Manage></Manage>
+          <PrivateRoute path="/inventory">
+            <Inventory></Inventory>
           </PrivateRoute>
 
           <PrivateRoute path="/shipment">
